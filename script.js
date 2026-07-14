@@ -448,21 +448,21 @@ for (let i = 0; i < starCount; i++) {
   // Slightly varied star colors
   const hue = Math.random() < 0.15 ? (Math.random() < 0.5 ? 0.6 : 0.1) : 0;
   const sat = Math.random() < 0.15 ? 0.5 : 0;
-  const lum = 0.7 + Math.random() * 0.3;
+  const lum = 0.82 + Math.random() * 0.18;
   const c = new THREE.Color().setHSL(hue, sat, lum);
   starColors[i*3] = c.r; starColors[i*3+1] = c.g; starColors[i*3+2] = c.b;
-  starSizes[i] = Math.random() * 2.5 + 0.5;
+  starSizes[i] = Math.random() * 3.0 + 1.0;
 }
 starfieldGeo.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
 starfieldGeo.setAttribute('color', new THREE.BufferAttribute(starColors, 3));
 starfieldGeo.setAttribute('size', new THREE.BufferAttribute(starSizes, 1));
 
 const starMat = new THREE.PointsMaterial({
-  size: 1.2,
+  size: 1.8,
   vertexColors: true,
   sizeAttenuation: false,
   transparent: true,
-  opacity: 0.9,
+  opacity: 0.96,
 });
 const starfield = new THREE.Points(starfieldGeo, starMat);
 scene.add(starfield);
@@ -859,7 +859,7 @@ function animate() {
   }
 
   // Star twinkle
-  starMat.opacity = 0.85 + 0.1 * Math.sin(time * 1.5);
+  starMat.opacity = 0.92 + 0.06 * Math.sin(time * 1.5);
 
   renderer.render(scene, camera);
 }
