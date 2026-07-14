@@ -463,6 +463,8 @@ const starMat = new THREE.PointsMaterial({
   sizeAttenuation: false,
   transparent: true,
   opacity: 0.96,
+  blending: THREE.AdditiveBlending,
+  depthWrite: false,
 });
 const starfield = new THREE.Points(starfieldGeo, starMat);
 scene.add(starfield);
@@ -723,7 +725,6 @@ document.addEventListener('click', e => {
 
 // ── Info panel ───────────────────────────────────────────────
 const infoPanel = document.getElementById('info-panel');
-const infoIcon = document.getElementById('info-icon');
 const infoName = document.getElementById('info-name');
 const infoType = document.getElementById('info-type');
 const infoStats = document.getElementById('info-stats');
@@ -731,13 +732,10 @@ const infoDesc = document.getElementById('info-desc');
 const infoClose = document.getElementById('info-close');
 
 function showInfoPanel(data) {
-  infoIcon.style.background = `radial-gradient(circle at 35% 35%, ${data.color}, ${data.emissive || '#000'})`;
-  infoIcon.style.setProperty('--planet-glow', data.glow || 'rgba(91,158,255,0.3)');
-  infoIcon.style.boxShadow = `0 0 30px 10px ${data.glow || 'rgba(91,158,255,0.3)'}`;
   infoName.textContent = data.name;
   infoType.textContent = data.type || '';
   infoStats.innerHTML = Object.entries(data.stats || {}).map(([k, v]) =>
-    `<div class="stat-card"><div class="stat-label">${k}</div><div class="stat-value">${v}</div></div>`
+    `<div class="stat-row"><span class="stat-label">${k}</span><span class="stat-value">${v}</span></div>`
   ).join('');
   infoDesc.textContent = data.desc || '';
   infoPanel.classList.remove('hidden');
@@ -753,8 +751,7 @@ let showLabels = true;
 
 document.getElementById('btn-pause').addEventListener('click', function() {
   paused = !paused;
-  this.textContent = paused ? '▶ Resume' : '⏸ Pause';
-  this.classList.toggle('active', paused);
+  this.textContent = paused ? 'Resume' : 'Pause';
 });
 
 const speedSlider = document.getElementById('speed-slider');
@@ -767,13 +764,13 @@ speedSlider.addEventListener('input', function() {
 document.getElementById('btn-orbits').addEventListener('click', function() {
   showOrbits = !showOrbits;
   orbitGroup.visible = showOrbits;
-  this.classList.toggle('active', showOrbits);
+  this.textContent = showOrbits ? 'Orbits: on' : 'Orbits: off';
 });
 
 document.getElementById('btn-labels').addEventListener('click', function() {
   showLabels = !showLabels;
   labelEls.forEach(el => { el.style.opacity = showLabels ? '1' : '0'; });
-  this.classList.toggle('active', showLabels);
+  this.textContent = showLabels ? 'Labels: on' : 'Labels: off';
 });
 
 document.getElementById('btn-reset').addEventListener('click', () => {
