@@ -1,9 +1,339 @@
+/* ─── Reset & Root ─────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #02040a;
+  --glass: rgba(8, 16, 36, 0.72);
+  --glass-border: rgba(100, 160, 255, 0.18);
+  --accent: #5b9eff;
+  --accent2: #a78bfa;
+  --gold: #ffd166;
+  --text: #e2eaff;
+  --muted: #8899bb;
+  --panel-w: 320px;
+  --header-h: 64px;
+  --radius: 14px;
+  --font: 'Outfit', sans-serif;
+  --mono: 'Space Mono', monospace;
+}
+
 body {
   margin: 0;
   overflow: hidden;
-  background: #111;
+  background: var(--bg);
+  font-family: var(--font);
+  color: var(--text);
+  user-select: none;
 }
 
-canvas {
+canvas#bg {
   display: block;
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
+
+/* ─── HUD Header ────────────────────────────────────────── */
+.hud-header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: var(--header-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  background: var(--glass);
+  backdrop-filter: blur(18px) saturate(160%);
+  border-bottom: 1px solid var(--glass-border);
+  z-index: 100;
+  gap: 16px;
+}
+
+.hud-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.hud-icon { font-size: 1.6rem; filter: drop-shadow(0 0 10px #ffd16680); }
+
+.hud-title h1 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  background: linear-gradient(135deg, #fff 30%, #5b9eff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hud-sub {
+  font-size: 0.7rem;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  display: none;
+}
+@media (min-width: 700px) { .hud-sub { display: inline; } }
+
+/* ─── Controls ──────────────────────────────────────────── */
+.hud-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.ctrl-btn {
+  background: rgba(91,158,255,0.1);
+  color: var(--text);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-family: var(--font);
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, transform 0.15s;
+  white-space: nowrap;
+}
+
+.ctrl-btn:hover {
+  background: rgba(91,158,255,0.22);
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.ctrl-btn.active {
+  background: rgba(91,158,255,0.25);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.speed-wrap {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.speed-wrap label { font-weight: 500; color: var(--text); }
+
+#speed-slider {
+  -webkit-appearance: none;
+  width: 90px;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(91,158,255,0.25);
+  outline: none;
+  cursor: pointer;
+}
+#speed-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+  cursor: pointer;
+}
+#speed-val {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--gold);
+  min-width: 28px;
+}
+
+/* ─── Info Panel ────────────────────────────────────────── */
+.info-panel {
+  position: fixed;
+  top: calc(var(--header-h) + 16px);
+  right: 16px;
+  width: var(--panel-w);
+  background: var(--glass);
+  backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  padding: 28px 24px 24px;
+  z-index: 100;
+  transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s;
+  overflow: hidden;
+}
+
+.info-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, rgba(91,158,255,0.06) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.info-panel.hidden {
+  transform: translateX(calc(var(--panel-w) + 32px));
+  opacity: 0;
+  pointer-events: none;
+}
+
+.info-close {
+  position: absolute;
+  top: 12px; right: 14px;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid var(--glass-border);
+  border-radius: 6px;
+  color: var(--muted);
+  font-size: 0.9rem;
+  width: 28px; height: 28px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center;
+}
+.info-close:hover { color: #fff; background: rgba(255,80,80,0.2); border-color: rgba(255,80,80,0.5); }
+
+.info-planet-icon {
+  width: 70px; height: 70px;
+  border-radius: 50%;
+  margin: 0 auto 16px;
+  box-shadow: 0 0 30px 10px var(--planet-glow, rgba(91,158,255,0.3));
+  transition: box-shadow 0.4s;
+}
+
+.info-panel h2 {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  margin-bottom: 4px;
+}
+
+.info-type {
+  text-align: center;
+  font-size: 0.72rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 18px;
+}
+
+.info-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.stat-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+.stat-label {
+  font-size: 0.65rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 2px;
+}
+.stat-value {
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  color: var(--gold);
+  font-weight: 700;
+}
+
+.info-desc {
+  font-size: 0.82rem;
+  color: var(--muted);
+  line-height: 1.65;
+  text-align: justify;
+}
+
+/* ─── Tooltip ───────────────────────────────────────────── */
+.tooltip {
+  position: fixed;
+  background: rgba(8,16,36,0.92);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  color: var(--text);
+  pointer-events: none;
+  z-index: 200;
+  white-space: nowrap;
+  transition: opacity 0.15s;
+}
+.tooltip.hidden { opacity: 0; }
+
+/* ─── Legend ────────────────────────────────────────────── */
+.legend {
+  position: fixed;
+  bottom: 50px;
+  left: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  z-index: 100;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  backdrop-filter: blur(14px);
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: default;
+  transition: color 0.2s;
+}
+.legend-item:hover { color: var(--text); }
+
+.dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 6px currentColor;
+  flex-shrink: 0;
+}
+
+/* ─── Instructions ──────────────────────────────────────── */
+.instructions {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 20px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 40px;
+  padding: 8px 20px;
+  backdrop-filter: blur(14px);
+  font-size: 0.72rem;
+  color: var(--muted);
+  z-index: 100;
+  white-space: nowrap;
+}
+.instructions span { letter-spacing: 0.02em; }
+
+/* ─── Planet Labels (canvas-drawn HTML divs) ────────────── */
+.planet-label {
+  position: fixed;
+  pointer-events: none;
+  z-index: 50;
+  font-family: var(--font);
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: rgba(220,235,255,0.85);
+  letter-spacing: 0.06em;
+  text-shadow: 0 0 8px rgba(91,158,255,0.8), 0 1px 3px rgba(0,0,0,0.8);
+  white-space: nowrap;
+  transform: translateX(-50%);
+  transition: opacity 0.3s;
 }

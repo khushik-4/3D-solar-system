@@ -3,16 +3,73 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>3D Solar System</title>
+  <title>3D Solar System — Interactive Explorer</title>
+  <meta name="description" content="An interactive 3D solar system built with Three.js. Explore all 8 planets, Saturn's rings, asteroid belt and more." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+
+  <!-- Canvas -->
   <canvas id="bg"></canvas>
 
-  <!-- Three.js library -->
-  <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+  <!-- Top Header -->
+  <header class="hud-header">
+    <div class="hud-title">
+      <span class="hud-icon">☀️</span>
+      <h1>Solar System</h1>
+      <span class="hud-sub">Interactive 3D Explorer</span>
+    </div>
+    <div class="hud-controls">
+      <button id="btn-pause" class="ctrl-btn" title="Pause / Resume">⏸ Pause</button>
+      <div class="speed-wrap">
+        <label for="speed-slider">Speed</label>
+        <input type="range" id="speed-slider" min="0" max="5" step="0.1" value="1" />
+        <span id="speed-val">1×</span>
+      </div>
+      <button id="btn-orbits" class="ctrl-btn active" title="Toggle orbit paths">⭕ Orbits</button>
+      <button id="btn-labels" class="ctrl-btn active" title="Toggle labels">🏷 Labels</button>
+      <button id="btn-reset" class="ctrl-btn" title="Reset camera">🎯 Reset</button>
+    </div>
+  </header>
 
-  <!-- Our main script -->
+  <!-- Planet Info Panel -->
+  <aside id="info-panel" class="info-panel hidden">
+    <button id="info-close" class="info-close">✕</button>
+    <div class="info-planet-icon" id="info-icon"></div>
+    <h2 id="info-name">Planet</h2>
+    <p id="info-type" class="info-type"></p>
+    <div class="info-stats" id="info-stats"></div>
+    <p id="info-desc" class="info-desc"></p>
+  </aside>
+
+  <!-- Tooltip -->
+  <div id="tooltip" class="tooltip hidden"></div>
+
+  <!-- Mini Legend -->
+  <div class="legend">
+    <div class="legend-item"><span class="dot" style="background:#FFD700"></span> Sun</div>
+    <div class="legend-item"><span class="dot" style="background:#b5b5b5"></span> Mercury</div>
+    <div class="legend-item"><span class="dot" style="background:#e8cda0"></span> Venus</div>
+    <div class="legend-item"><span class="dot" style="background:#4fa3e0"></span> Earth</div>
+    <div class="legend-item"><span class="dot" style="background:#c1440e"></span> Mars</div>
+    <div class="legend-item"><span class="dot" style="background:#c88b3a"></span> Jupiter</div>
+    <div class="legend-item"><span class="dot" style="background:#e4d191"></span> Saturn</div>
+    <div class="legend-item"><span class="dot" style="background:#7de8e8"></span> Uranus</div>
+    <div class="legend-item"><span class="dot" style="background:#4169e1"></span> Neptune</div>
+  </div>
+
+  <!-- Instructions -->
+  <div class="instructions">
+    <span>🖱 Drag to rotate</span>
+    <span>🔎 Scroll to zoom</span>
+    <span>👆 Click planet for info</span>
+  </div>
+
+  <!-- Three.js -->
+  <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
