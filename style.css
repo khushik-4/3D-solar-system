@@ -1,4 +1,4 @@
-/* ─── Reset ──────────────────────────────────────────────── */
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
@@ -16,7 +16,7 @@ canvas#bg {
   z-index: 0;
 }
 
-/* ─── Header ─────────────────────────────────────────────── */
+
 .hud-header {
   position: fixed;
   top: 0; left: 0; right: 0;
@@ -36,7 +36,7 @@ canvas#bg {
   white-space: nowrap;
 }
 
-/* ─── Controls ───────────────────────────────────────────── */
+
 .hud-controls {
   display: flex;
   align-items: center;
