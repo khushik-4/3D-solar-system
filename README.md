@@ -1,4 +1,3 @@
-
 #  3D Solar System
 
 An interactive 3D Solar System simulation that visualizes planets, their orbital motion, and the vastness of space through an immersive web experience.
